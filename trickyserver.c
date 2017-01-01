@@ -45,3 +45,59 @@ int main(int argc, char **argv)
         return(1);
     }
     printf("new connection from %s, fd %d\n", inet_ntoa(r.sin_addr), clientfd);
+    fflush(stdout);
+
+    write(clientfd, greeting, sizeof greeting - 1);
+    printf("sent banner\n");
+    fflush(stdout);
+
+    for (i = 0; i < 5; i++) {
+        sleep(1);
+        write(clientfd, message1 + i * 5, 5);
+        printf("sent %.5s (but no newline, so you shouldn't react yet)\n", message1 + i * 5);
+        fflush(stdout);
+    }
+
+    printf("[slowing down now]\n");
+    fflush(stdout);
+    sleep(2);
+    write(clientfd, message2, sizeof message2 - 1);
+    printf("sent newline (so you should see all of the above) plus more text (which shouldn't do anything yet)\n");
+    fflush(stdout);
+
+    sleep(3);
+    write(clientfd, message3, sizeof message3 - 1);
+    printf("sent newline (so you should see \"something\")\n");
+    fflush(stdout);
+
+    sleep(2);
+    return(0);
+}
+
+
+void setup()  /* bind and listen, abort on error */
+{
+    struct sockaddr_in r;
+
+    (void)signal(SIGPIPE, SIG_IGN);
+
+    if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket");
+        exit(1);
+    }
+
+    memset(&r, '\0', sizeof r);
+    r.sin_family = AF_INET;
+    r.sin_addr.s_addr = INADDR_ANY;
+    r.sin_port = htons(port);
+
+    if (bind(listenfd, (struct sockaddr *)&r, sizeof r)) {
+        perror("bind");
+        exit(1);
+    }
+
+    if (listen(listenfd, 5)) {
+        perror("listen");
+        exit(1);
+    }
+}
