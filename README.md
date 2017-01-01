@@ -9,4 +9,4 @@ One of the files is parse.c, which can parse and compute the value of these expr
 
 The user of the program can also type messages on stdin, and the program shows everything from the server on stdout. Thus if no one says "Hey Marvin,", the only difference between this and a proper chat client is that it doesn't let you enter your "handle".
 
-Note that the supplied chat server broadcasts all messages to all clients, including the client that sent them; thus the user will see the messages you generate, prefaced by "Marvin:". (That is, you don't have to do anything to make this happen.)
+Note that the supplied chat server broadcasts all messages to all clients, including the client that sent them; thus the user will see the messages you generate, prefaced by "Marvin:".
